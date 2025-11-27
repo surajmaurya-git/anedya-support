@@ -1,0 +1,136 @@
+
+check network strength: AT+CSQ
+AT+QIACT? 
+
+Basic AT Command: AT\r\n
+Deactivate PDP Context: AT+QIDEACT=1\r\n
+
+Set APN: (according to network operator)
+- AT+QICSGP=1,1,"airtelgprs.com","","",1
+
+AT+QIACT=1
+
+AT+QHTTPURL=46,80
+https://device.ap-in-1.anedya.io/v1/submitData
+
+AT+QHTTPCFG="header","Auth-mode:key"
+AT+QHTTPCFG="header","Authorization:key:483f559cc959f812fc045abfc05d9a88"
+
+Ping Google to check internet availability: AT+QPING=1,"www.google.com"\r\n
+
+
+
+AT&F     // factory default settings
+AT+CFUN=1,1     // restart the modem while setting it to full functionality mode
+AT+CREG?
+AT+CSQ
+AT+QIACT=1
+AT+CGACT=1,1
+AT+CGATT=1
+AT+CGDCONT?   //query the PDP (Packet Data Protocol) context configurations on a modem
+
+
+AT+QSSLOPEN=1,1,4,"google.com",443,0
+
+AT+QFLST
+
+
+AT+QHTTPCFG="sslctxid",1
+AT+QSSLCFG="sslversion",1,4
+AT+QSSLCFG="seclevel",1,0
+AT+QSSLCFG="cacert",1,"UFS:anedya_tls_root_ca.pem"
+
+AT+QHTTPCFG="contextid",1
+# AT+QHTTPCFG="requestheader",0
+AT+QHTTPCFG="requestheader",1
+AT+QHTTPCFG="responseheader",1
+AT+QHTTPCFG="contenttype",1
+AT+QHTTPCFG="rspout/auto",1
+AT+QHTTPCFG="closed/ind",1
+AT+QHTTPCFG="url","https://device.ap-in-1.anedya.io/v1/submitData"
+AT+QHTTPCFG="url","https://assets.ap-in-1.anedya.io/b42c6566b49049d78f114dc6070e888c/0195e1a2aa1a7a5e81c060a92c69d1b4?am=device&auth=76af51bb0383530ca44294731f83bb952b4b7127609f6f74e822c194f5ba7c16&exp=1746710374&prj=b42c6566b49049d78f114dc6070e888c"
+AT+QHTTPCFG="header","Range: bytes=20-1024"
+# AT+QHTTPCFG="header","Content-Type: application/json"
+# AT+QHTTPCFG="header","Accept: application/json"
+# AT+QHTTPCFG="header","Auth-mode: key"
+# AT+QHTTPCFG="header","Authorization:483f559cc959f812fc045abfc05d9a88"
+
+AT+QHTTPCFG?
+
+AT+QHTTPPOST=60,80,80
+CONNECT
+{"data":[{"variable":"temp","value": 25.00,"timestamp": 0}]}
+
+
+AT+QHTTPCFG="url","https://assets.ap-in-1.anedya.io/b42c6566b49049d78f114dc6070e888c/0195e1a2aa1a7a5e81c060a92c69d1b4?am=device&auth=166de82004639bd67949f1467c0cb58823c5901a881bcdca9638c1ad7ad4b154&exp=1746776555&prj=b42c6566b49049d78f114dc6070e888c"
+
+AT+QHTTPGET=80
+
+
+
+
+
+AT&F     // factory default settings
+AT+CFUN=1,1     // restart the modem while setting it to full functionality mode
+AT+CREG?
+AT+CSQ
+AT+QIACT=1
+AT+CGACT=1,1
+AT+CGATT=1
+AT+CGDCONT?   //query the PDP (Packet Data Protocol) context configurations on a modem
+
+AT+QHTTPCFG="contextid",1
+AT+QHTTPCFG="requestheader",0
+AT+QHTTPCFG="responseheader",1
+
+AT+QIACT?
+AT+QICSGP=1,1,"jionet","","",1
+AT+QIACT=1
+AT+QIACT?
+
+AT+QHTTPCFG="sslctxid",1
+AT+QSSLCFG="sslversion",1,4
+AT+QSSLCFG="ciphersuite",1,0x0005
+AT+QSSLCFG="seclevel",1,0
+AT+QSSLCFG="cacert",1,"UFS:anedya_tls_root_ca.pem"
+
+AT+QHTTPURL=230,80
+https://assets.ap-in-1.anedya.io/b42c6566b49049d78f114dc6070e888c/0195e1a2aa1a7a5e81c060a92c69d1b4?am=device&auth=166de82004639bd67949f1467c0cb58823c5901a881bcdca9638c1ad7ad4b154&exp=1746776555&prj=b42c6566b49049d78f114dc6070e888c
+
+AT+QHTTPGET=80
+AT+QHTTPGETEX=80,0,200
+AT+QHTTPREAD=80
+
+https://www.google.com/
+
+
+==================================== get req===================
+====================================quectel====================
+AT+QHTTPCFG="contextid",1
+AT+QHTTPCFG="responseheader",1
+AT+QHTTPCFG="requestheader",0
+AT+QIACT?
+AT+QICSGP=1,1,"jionet","","",1
+AT+QIACT=1
+AT+QIACT?
+AT+QHTTPCFG="sslctxid",1
+AT+QSSLCFG="sslversion",1,3
+AT+QSSLCFG="seclevel",1,0
+AT+QSSLCFG="sni",1,1
+AT+QSSLCFG="cacert",1,"UFS:anedyaecc_crt.pem"
+AT+QHTTPURL=230,80
+https://assets.ap-in-1.anedya.io/b42c6566b49049d78f114dc6070e888c/0195e1a2aa1a7a5e81c060a92c69d1b4?am=device&auth=1cce18974d79d40b5ccbd91958a3b630048411e60b87d215bcdfebd1226bfc9f&exp=1746795513&prj=b42c6566b49049d78f114dc6070e888c
+AT+QHTTPGETEX=80,0,200
+AT+QHTTPREAD=80
+
+
+============================ simcom =====================================
+AT+CSSLCFG="sslversion",0,3
+AT+CSSLCFG="authmode",0,0
+AT+CSSLCFG="cacert",0,"anedyaecc_crt.pem"
+AT+CSSLCFG="enableSNI",0,1
+AT+HTTPINIT
+AT+HTTPPARA="SSLCFG",0
+AT+HTTPPARA="URL","https://assets.ap-in-1.anedya.io/b42c6566b49049d78f114dc6070e888c/0195e1a2aa1a7a5e81c060a92c69d1b4?am=device&auth=1e45fb43b5257fb1a8164fc34e26c57ad86fe9343a6a202e2832052fdda7a5ea&exp=1746792062&prj=b42c6566b49049d78f114dc6070e888c"
+AT+HTTPACTION=0
+AT+HTTPREAD=0,512

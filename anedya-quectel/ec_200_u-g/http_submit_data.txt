@@ -1,0 +1,51 @@
+
+check network strength: AT+CSQ
+AT+QIACT? 
+
+Basic AT Command: AT\r\n
+Deactivate PDP Context: AT+QIDEACT=1\r\n
+
+Set APN: (according to network operator)
+- AT+QICSGP=1,1,"airtelgprs.com","","",1
+
+AT+QIACT=1
+
+Ping Google to check internet availability: AT+QPING=1,"www.google.com"\r\n
+
+AT&F     // factory default settings
+AT+CFUN=1,1     // restart the modem while setting it to full functionality mode
+AT+CREG?
+AT+CSQ
+AT+QIACT=1
+AT+CGACT=1,1
+AT+CGATT=1
+AT+CGDCONT?   //query the PDP (Packet Data Protocol) context configurations on a modem
+
+AT+QHTTPCFG="sslctxid",1
+AT+QSSLCFG="sslversion",1,4
+AT+QSSLCFG="seclevel",1,0
+AT+QSSLCFG="cacert",1,"UFS:anedya_tls_root_ca.pem"
+
+AT+QHTTPCFG="contextid",1
+# AT+QHTTPCFG="requestheader",0
+AT+QHTTPCFG="requestheader",1
+AT+QHTTPCFG="responseheader",1
+AT+QHTTPCFG="contenttype",1
+AT+QHTTPCFG="rspout/auto",1
+AT+QHTTPCFG="closed/ind",1
+AT+QHTTPCFG="url","https://device.ap-in-1.anedya.io/v1/submitData"
+# AT+QHTTPCFG="header","Content-Type: application/json"
+# AT+QHTTPCFG="header","Accept: application/json"
+# AT+QHTTPCFG="header","Auth-mode: key"
+# AT+QHTTPCFG="header","Authorization:483f559cc959f812fc045abfc05d9a88"  // connection key
+
+AT+QHTTPCFG?
+
+AT+QHTTPPOST=60,80,80
+CONNECT
+{"data":[{"variable":"temp","value": 25.00,"timestamp": 0}]}
+
+AT+QHTTPGET=80
+
+
+

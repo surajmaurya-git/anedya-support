@@ -1,0 +1,219 @@
+/*
+This demonstration uses the following credentials:
+    - Device ID: d84569e2-ad23-4a95-9ca6-f8e0414e9d8a
+    - Connection Key: 5bc55b2c3dbd6bacdebc91671391be63
+    - Temperature Variable Identifier: tempId
+    - Location Variable Identifier: locationId
+    - Cert: 
+            -----BEGIN CERTIFICATE-----
+            MIICDDCCAbOgAwIBAgITQxd3Dqj4u/74GrImxc0M4EbUvDAKBggqhkjOPQQDAjBL
+            MQswCQYDVQQGEwJJTjEQMA4GA1UECBMHR3VqYXJhdDEPMA0GA1UEChMGQW5lZHlh
+            MRkwFwYDVQQDExBBbmVkeWEgUm9vdCBDQSAzMB4XDTI0MDEwMTAwMDAwMFoXDTQz
+            MTIzMTIzNTk1OVowSzELMAkGA1UEBhMCSU4xEDAOBgNVBAgTB0d1amFyYXQxDzAN
+            BgNVBAoTBkFuZWR5YTEZMBcGA1UEAxMQQW5lZHlhIFJvb3QgQ0EgMzBZMBMGByqG
+            SM49AgEGCCqGSM49AwEHA0IABKsxf0vpbjShIOIGweak0/meIYS0AmXaujinCjFk
+            BFShcaf2MdMeYBPPFwz4p5I8KOCopgshSTUFRCXiiKwgYPKjdjB0MA8GA1UdEwEB
+            /wQFMAMBAf8wHQYDVR0OBBYEFNz1PBRXdRsYQNVsd3eYVNdRDcH4MB8GA1UdIwQY
+            MBaAFNz1PBRXdRsYQNVsd3eYVNdRDcH4MA4GA1UdDwEB/wQEAwIBhjARBgNVHSAE
+            CjAIMAYGBFUdIAAwCgYIKoZIzj0EAwIDRwAwRAIgR/rWSG8+L4XtFLces0JYS7bY
+            5NH1diiFk54/E5xmSaICIEYYbhvjrdR0GVLjoay6gFspiRZ7GtDDr9xF91WbsK0P
+            -----END CERTIFICATE-----
+
+    Please make sure to replace these credentials with your own(except cert).
+*/
+
+/* Step 1: Store Anedya's Server Certificates in the modem */
+
+// Open or create the anedyaecc_crt.pem file
+[2025-03-04 17:21:22:200_S:] AT+QFOPEN="anedyaecc_crt.pem",1
+[2025-03-04 17:21:22:216_R:] AT+QFOPEN="anedyaecc_crt.pem",1
+
+
+[2025-03-04 17:21:22:216_R:] +QFOPEN: 1027
+
+[2025-03-04 17:21:22:216_R:] OK
+
+// Write data
+[2025-03-04 17:21:29:012_S:] AT+QFWRITE=1027,780,20 
+[2025-03-04 17:21:29:030_R:] AT+QFWRITE=1027,780,20 
+
+[2025-03-04 17:21:29:030_R:] CONNECT
+[2025-03-04 17:21:37:351_S:] -----BEGIN CERTIFICATE-----
+[2025-03-04 17:21:47:471_S:] MIICDDCCAbOgAwIBAgITQxd3Dqj4u/74GrImxc0M4EbUvDAKBggqhkjOPQQDAjBL
+[2025-03-04 17:21:57:408_S:] MQswCQYDVQQGEwJJTjEQMA4GA1UECBMHR3VqYXJhdDEPMA0GA1UEChMGQW5lZHlh
+[2025-03-04 17:22:08:120_S:] MRkwFwYDVQQDExBBbmVkeWEgUm9vdCBDQSAzMB4XDTI0MDEwMTAwMDAwMFoXDTQz
+[2025-03-04 17:22:19:071_S:] MTIzMTIzNTk1OVowSzELMAkGA1UEBhMCSU4xEDAOBgNVBAgTB0d1amFyYXQxDzAN
+[2025-03-04 17:22:29:024_S:] BgNVBAoTBkFuZWR5YTEZMBcGA1UEAxMQQW5lZHlhIFJvb3QgQ0EgMzBZMBMGByqG
+[2025-03-04 17:22:38:095_S:] SM49AgEGCCqGSM49AwEHA0IABKsxf0vpbjShIOIGweak0/meIYS0AmXaujinCjFk
+[2025-03-04 17:22:46:023_S:] BFShcaf2MdMeYBPPFwz4p5I8KOCopgshSTUFRCXiiKwgYPKjdjB0MA8GA1UdEwEB
+[2025-03-04 17:22:54:328_S:] /wQFMAMBAf8wHQYDVR0OBBYEFNz1PBRXdRsYQNVsd3eYVNdRDcH4MB8GA1UdIwQY
+[2025-03-04 17:23:03:391_S:] MBaAFNz1PBRXdRsYQNVsd3eYVNdRDcH4MA4GA1UdDwEB/wQEAwIBhjARBgNVHSAE
+[2025-03-04 17:23:12:175_S:] CjAIMAYGBFUdIAAwCgYIKoZIzj0EAwIDRwAwRAIgR/rWSG8+L4XtFLces0JYS7bY
+[2025-03-04 17:23:20:144_S:] 5NH1diiFk54/E5xmSaICIEYYbhvjrdR0GVLjoay6gFspiRZ7GtDDr9xF91WbsK0P
+[2025-03-04 17:23:29:087_S:] -----END CERTIFICATE-----
+[2025-03-04 17:23:29:240_R:] +QFWRITE: 780,780
+
+[2025-03-04 17:23:29:240_R:] OK
+
+// close file
+[2025-03-04 17:24:46:151_S:] AT+QFCLOSE=1027
+[2025-03-04 17:24:46:158_R:] AT+QFCLOSE=1027
+
+[2025-03-04 17:24:46:158_R:] OK
+
+// Fetch the file list to check whether the certificate is stored
+[2025-03-04 17:24:52:512_S:] AT+QFLST
+[2025-03-04 17:24:52:542_R:] AT+QFLST
+
+[2025-03-04 17:24:52:542_R:] +QFLST: "UFS:boot",15004
+[2025-03-04 17:24:52:542_R:] +QFLST: "UFS:firm",241920
+[2025-03-04 17:24:52:542_R:] +QFLST: "UFS:cert"
+[2025-03-04 17:24:52:542_R:] +QFLST: "UFS:anedyaecc_crt.pem",780
+
+[2025-03-04 17:24:52:542_R:] OK
+
+// Open the anedyaecc_crt.pem file to read and verify if it stores a valid certificate
+[2025-03-04 17:24:59:975_S:] AT+QFOPEN="anedyaecc_crt.pem",0
+[2025-03-04 17:24:59:994_R:] AT+QFOPEN="anedyaecc_crt.pem",0
+
+[2025-03-04 17:24:59:994_R:] +QFOPEN: 1027
+
+[2025-03-04 17:24:59:994_R:] OK
+
+// read file
+[2025-03-04 17:25:06:087_S:] AT+QFREAD=1027,780
+[2025-03-04 17:25:06:179_R:] AT+QFREAD=1027,780
+
+[2025-03-04 17:25:06:179_R:] CONNECT 780
+[2025-03-04 17:25:06:179_R:] -----BEGIN CERTIFICATE-----
+[2025-03-04 17:25:06:179_R:] MIICDDCCAbOgAwIBAgITQxd3Dqj4u/74GrImxc0M4EbUvDAKBggqhkjOPQQDAjBL
+[2025-03-04 17:25:06:179_R:] MQswCQYDVQQGEwJJTjEQMA4GA1UECBMHR3VqYXJhdDEPMA0GA1UEChMGQW5lZHlh
+[2025-03-04 17:25:06:179_R:] MRkwFwYDVQQDExBBbmVkeWEgUm9vdCBDQSAzMB4XDTI0MDEwMTAwMDAwMFoXDTQz
+[2025-03-04 17:25:06:179_R:] MTIzMTIzNTk1OVowSzELMAkGA1UEBhMCSU4xEDAOBgNVBAgTB0d1amFyYXQxDzAN
+[2025-03-04 17:25:06:179_R:] BgNVBAoTBkFuZWR5YTEZMBcGA1UEAxMQQW5lZHlhIFJvb3QgQ0EgMzBZMBMGByqG
+[2025-03-04 17:25:06:179_R:] SM49AgEGCCqGSM49AwEHA0IABKsxf0vpbjShIOIGweak0/meIYS0AmXaujinCjFk
+[2025-03-04 17:25:06:179_R:] BFShcaf2MdMeYBPPFwz4p5I8KOCopgshSTUFRCXiiKwgYPKjdjB0MA8GA1UdEwEB
+[2025-03-04 17:25:06:179_R:] /wQFMAMBAf8wHQYDVR0OBBYEFNz1PBRXdRsYQNVsd3eYVNdRDcH4MB8GA1UdIwQY
+[2025-03-04 17:25:06:179_R:] MBaAFNz1PBRXdRsYQNVsd3eYVNdRDcH4MA4GA1UdDwEB/wQEAwIBhjARBgNVHSAE
+[2025-03-04 17:25:06:179_R:] CjAIMAYGBFUdIAAwCgYIKoZIzj0EAwIDRwAwRAIgR/rWSG8+L4XtFLces0JYS7bY
+[2025-03-04 17:25:06:179_R:] 5NH1diiFk54/E5xmSaICIEYYbhvjrdR0GVLjoay6gFspiRZ7GtDDr9xF91WbsK0P
+[2025-03-04 17:25:06:179_R:] -----END CERTIFICATE-----
+[2025-03-04 17:25:06:179_R:] OK
+
+// close opened file
+[2025-03-04 17:25:13:175_S:] AT+QFCLOSE=1027
+[2025-03-04 17:25:13:182_R:] AT+QFCLOSE=1027
+
+[2025-03-04 17:25:13:182_R:] OK
+
+/*
+Step 2: Establish an MQTT Connection
+*/
+
+// Configure the receiving mode when data is received from the server
+[2025-03-04 17:25:19:816_S:] AT+QMTCFG="recv/mode",0,0,1 
+[2025-03-04 17:25:19:836_R:] AT+QMTCFG="recv/mode",0,0,1 
+
+[2025-03-04 17:25:19:836_R:] OK
+
+// Configure the MQTT SSL mode and SSL context index 
+[2025-03-04 17:25:25:887_S:] AT+QMTCFG="SSL",0,1,2 
+[2025-03-04 17:25:25:900_R:] AT+QMTCFG="SSL",0,1,2 
+
+[2025-03-04 17:25:25:900_R:] OK
+
+// Configure the path of the trusted CA certificate for the specified SSL context
+[2025-03-04 17:25:33:352_S:] AT+QSSLCFG="cacert",2,"UFS:anedyaecc_crt.pem"
+[2025-03-04 17:25:33:368_R:] AT+QSSLCFG="cacert",2,"UFS:anedyaecc_crt.pem"
+
+[2025-03-04 17:25:33:368_R:] OK
+
+// Configure the authentication mode for the specified SSL context
+[2025-03-04 17:25:40:431_S:] AT+QSSLCFG="seclevel",2,1 
+[2025-03-04 17:25:40:438_R:] AT+QSSLCFG="seclevel",2,1 
+
+[2025-03-04 17:25:40:453_R:] OK
+
+// Configure the SSL version for the specified SSL context
+[2025-03-04 17:25:46:239_S:] AT+QSSLCFG="sslversion",2,4
+[2025-03-04 17:25:46:246_R:] AT+QSSLCFG="sslversion",2,4
+
+[2025-03-04 17:25:46:262_R:] OK
+
+// Configure the SSL cipher suites for the specified SSL context
+[2025-03-04 17:25:51:561_S:] AT+QSSLCFG="ciphersuite",2,0xFFFF
+[2025-03-04 17:25:51:576_R:] AT+QSSLCFG="ciphersuite",2,0xFFFF
+
+[2025-03-04 17:25:51:576_R:] OK
+
+// Configure whether to ignore the certificate validity period check for the specified SSL context
+[2025-03-04 17:25:56:999_S:] AT+QSSLCFG="ignorelocaltime",2,1
+[2025-03-04 17:25:57:017_R:] AT+QSSLCFG="ignorelocaltime",2,1
+
+[2025-03-04 17:25:57:017_R:] OK
+
+// This command opens a network for the MQTT client
+[2025-03-04 17:26:03:071_S:] AT+QMTOPEN=0,"mqtt.ap-in-1.anedya.io",8883  
+[2025-03-04 17:26:03:081_R:] AT+QMTOPEN=0,"mqtt.ap-in-1.anedya.io",8883
+[2025-03-04 17:26:03:097_R:] OK
+
+
+[2025-03-04 17:26:08:555_R:] +QMTOPEN: 0,0     // Second digit indicates connection status. If it is 5, make sure you are uploading the certificate correctly
+
+// Connect to mqtt server.
+[2025-03-04 17:26:15:768_S:] AT+QMTCONN=0,"d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","5bc55b2c3dbd6bacdebc91671391be63"   
+[2025-03-04 17:26:15:783_R:] AT+QMTCONN=0,"d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","5bc55b2c3dbd6bacdebc91671391be63" 
+
+[2025-03-04 17:26:15:804_R:] OK
+
+[2025-03-04 17:26:16:028_R:] +QMTCONN: 0,0,0
+
+// Subscribe to Topics 
+[2025-03-04 17:26:26:552_S:] AT+QMTSUB=0,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/commands",1  // topic to receive commands
+[2025-03-04 17:26:26:583_R:] AT+QMTSUB=0,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/commands",1 
+
+[2025-03-04 17:26:26:583_R:] OK
+
+[2025-03-04 17:26:28:147_R:] +QMTSUB: 0,1,0,1
+[2025-03-04 17:26:35:239_S:] AT+QMTSUB=0,2,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/response",1 // topic to receive response
+[2025-03-04 17:26:35:270_R:] AT+QMTSUB=0,2,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/response",1
+
+[2025-03-04 17:26:35:270_R:] OK
+
+[2025-03-04 17:26:35:428_R:] +QMTSUB: 0,2,0,1
+[2025-03-04 17:26:43:224_S:] AT+QMTSUB=0,3,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/errors",1 // topic to receive errors
+[2025-03-04 17:26:43:256_R:] AT+QMTSUB=0,3,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/errors",1
+
+[2025-03-04 17:26:43:256_R:] OK
+
+[2025-03-04 17:26:43:432_R:] +QMTSUB: 0,3,0,1
+[2025-03-04 17:26:52:686_S:] AT+QMTSUB=0,4,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/valuestore/updates/json",1 // topic to receive valuestore updates
+[2025-03-04 17:26:52:702_R:] AT+QMTSUB=0,4,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/valuestore/updates/json",1
+
+[2025-03-04 17:26:52:719_R:] OK
+
+[2025-03-04 17:26:52:910_R:] +QMTSUB: 0,4,0,1
+
+// Publish Operation
+// Submit Data
+// Note: Before pubishing data , make sure you have created variables on the anedya plateform
+[2025-03-04 17:27:02:591_S:] AT+QMTPUBEX=0,2,1,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/submitdata/json",156
+[2025-03-04 17:27:02:623_R:] AT+QMTPUBEX=0,2,1,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/submitdata/json",156
+
+[2025-03-04 17:27:02:623_R:] > {"data":[{"variable":"tempId","value":123.456,"timestamp":1741075760000},{"variable":"locationId","value":{"lat":23,"long":72.1},"timestamp":174107576000}]}
+[2025-03-04 17:27:10:586_R:] {"data":[{"variable":"tempId","value":123.456,"timestamp":1741075760000},{"variable":"locationId","value":{"lat":23,"long":72.1},"timestamp":174107576000}]}
+[2025-03-04 17:27:10:612_R:] OK
+
+[2025-03-04 17:27:10:788_R:] +QMTPUBEX: 0,2,0
+
+[2025-03-04 17:27:10:816_R:] +QMTRECV: 0,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/response",82,"{"reqId":"reqid_c7nCkSSRsIqPoVxMFjDXkeFX","success":true,"error":"","errorcode":0}"                              // received response
+
+
+// Disconnect
+[2025-03-04 17:27:20:817_S:] AT+QMTDISC=0 
+[2025-03-04 17:27:20:835_R:] AT+QMTDISC=0 
+
+[2025-03-04 17:27:20:835_R:] OK
+
+[2025-03-04 17:27:21:026_R:] +QMTDISC: 0,0
+

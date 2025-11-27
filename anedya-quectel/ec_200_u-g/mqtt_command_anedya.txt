@@ -1,0 +1,57 @@
+
+AT+QFLST // check stored file
+
+clientID=0
+p cid=1
+sslcid=2
+
+
+-----BEGIN CERTIFICATE-----
+MIICDDCCAbOgAwIBAgITQxd3Dqj4u/74GrImxc0M4EbUvDAKBggqhkjOPQQDAjBL
+MQswCQYDVQQGEwJJTjEQMA4GA1UECBMHR3VqYXJhdDEPMA0GA1UEChMGQW5lZHlh
+MRkwFwYDVQQDExBBbmVkeWEgUm9vdCBDQSAzMB4XDTI0MDEwMTAwMDAwMFoXDTQz
+MTIzMTIzNTk1OVowSzELMAkGA1UEBhMCSU4xEDAOBgNVBAgTB0d1amFyYXQxDzAN
+BgNVBAoTBkFuZWR5YTEZMBcGA1UEAxMQQW5lZHlhIFJvb3QgQ0EgMzBZMBMGByqG
+SM49AgEGCCqGSM49AwEHA0IABKsxf0vpbjShIOIGweak0/meIYS0AmXaujinCjFk
+BFShcaf2MdMeYBPPFwz4p5I8KOCopgshSTUFRCXiiKwgYPKjdjB0MA8GA1UdEwEB
+/wQFMAMBAf8wHQYDVR0OBBYEFNz1PBRXdRsYQNVsd3eYVNdRDcH4MB8GA1UdIwQY
+MBaAFNz1PBRXdRsYQNVsd3eYVNdRDcH4MA4GA1UdDwEB/wQEAwIBhjARBgNVHSAE
+CjAIMAYGBFUdIAAwCgYIKoZIzj0EAwIDRwAwRAIgR/rWSG8+L4XtFLces0JYS7bY
+5NH1diiFk54/E5xmSaICIEYYbhvjrdR0GVLjoay6gFspiRZ7GtDDr9xF91WbsK0P
+-----END CERTIFICATE-----
+
+
+AT+QFOPEN="anedyaecc_crt.pem",1
+AT+QFWRITE=1027,780,20   // provide certificate
+
+//Read the
+AT+QFOPEN="anedyaecc_crt.pem",1
+AT+QFREAD=1027,780
+
+AT+QMTCFG="version",0,4
+AT+QMTCFG="pdpcid",0,1
+AT+QMTCFG="recv/mode",0,0,1  
+AT+QMTCFG="SSL",0,1,2 
+AT+QMTCFG="keepalive",0,120
+AT+QMTCFG="session",0,0                             // keep the sesssion
+AT+QMTCFG="timeout",0,10,3,1
+AT+QSSLCFG="cacert",2,"UFS:anedyaecc_crt.pem"
+AT+QSSLCFG="seclevel",2,1 
+AT+QSSLCFG="sslversion",2,4
+AT+QSSLCFG="ciphersuite",2,0xFFFF
+AT+QSSLCFG="ignorelocaltime",2,1
+
+// start mqtt ssl connection
+AT+QMTOPEN=0,"mqtt.ap-in-1.anedya.io",8883
+
+AT+QMTCONN=0,"d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","5bc55b2c3dbd6bacdebc91671391be63" 
+
+AT+QMTSUB=0,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/commands",1
+AT+QMTSUB=0,2,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/response",1
+AT+QMTSUB=0,3,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/errors",1
+AT+QMTSUB=0,4,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/valuestore/updates/json",1
+
+AT+QMTPUBEX=0,2,1,1,"$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/submitdata/json",156
+{"data":[{"variable":"tempId","value":123.456,"timestamp":1741075760000},{"variable":"locationId","value":{"lat":23,"long":72.1},"timestamp":174107576000}]}
+
+AT+QMTDISC=0                         //isconnect a Client from MQTT Server  
