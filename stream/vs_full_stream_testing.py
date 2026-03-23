@@ -14,7 +14,7 @@ import sys
 import signal
 import uuid
 
-API_KEY = "ca60710cd9086030c5b3d272799e2f06771ff809f681de19d0e82b1ec633858b"
+API_KEY = "419f4d571f75936998447c2af41691c0d4dafe3af0fff58f85d64623660a0f79"
 
 # Global websocket object
 ws_app = None
@@ -74,10 +74,11 @@ def create_stream():
         "expiry": 86400,
     }
     body = json.dumps(payload)
+    print("Creating stream with payload:", json.dumps(payload, indent=2))
     headers = {"Authorization": f"Bearer {API_KEY}"}
     resp = requests.post(url, json=payload, headers=headers)
     info = resp.json()
-    # print("Stream creation response:", json.dumps(info, indent=2))
+    print("Stream creation response:", json.dumps(info, indent=2))
     stream_id = info["streamId"]
     stream_url = info["streamURL"]
 

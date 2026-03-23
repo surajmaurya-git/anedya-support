@@ -1,0 +1,100 @@
+
+
+/*------------ Download Anedya tls root ca, ECC certificate into the modem ------------*/
+//Anedya tls root ca ECC certificate
+-----BEGIN CERTIFICATE-----
+MIICDDCCAbOgAwIBAgITQxd3Dqj4u/74GrImxc0M4EbUvDAKBggqhkjOPQQDAjBL
+MQswCQYDVQQGEwJJTjEQMA4GA1UECBMHR3VqYXJhdDEPMA0GA1UEChMGQW5lZHlh
+MRkwFwYDVQQDExBBbmVkeWEgUm9vdCBDQSAzMB4XDTI0MDEwMTAwMDAwMFoXDTQz
+MTIzMTIzNTk1OVowSzELMAkGA1UEBhMCSU4xEDAOBgNVBAgTB0d1amFyYXQxDzAN
+BgNVBAoTBkFuZWR5YTEZMBcGA1UEAxMQQW5lZHlhIFJvb3QgQ0EgMzBZMBMGByqG
+SM49AgEGCCqGSM49AwEHA0IABKsxf0vpbjShIOIGweak0/meIYS0AmXaujinCjFk
+BFShcaf2MdMeYBPPFwz4p5I8KOCopgshSTUFRCXiiKwgYPKjdjB0MA8GA1UdEwEB
+/wQFMAMBAf8wHQYDVR0OBBYEFNz1PBRXdRsYQNVsd3eYVNdRDcH4MB8GA1UdIwQY
+MBaAFNz1PBRXdRsYQNVsd3eYVNdRDcH4MA4GA1UdDwEB/wQEAwIBhjARBgNVHSAE
+CjAIMAYGBFUdIAAwCgYIKoZIzj0EAwIDRwAwRAIgR/rWSG8+L4XtFLces0JYS7bY
+5NH1diiFk54/E5xmSaICIEYYbhvjrdR0GVLjoay6gFspiRZ7GtDDr9xF91WbsK0P
+-----END CERTIFICATE-----
+
+AT+CCERTDOWN="anedyaecc_crt.pem",780   //download ecc cert into the modem
+AT+CCERTLIST  // check for stored file
+/*-----------------------------------------------------------------------------------------*/
+
+/*----------------------- MQTT Connection AT commands -------------------------------------*/
+AT+CSSLCFG="sslversion",0,4  // set ssl version
+AT+CSSLCFG="authmode",0,1   // set authentication mode (NOTE: if you are facing issue with TLS handshake, try with setting authentication mode to 0)
+AT+CSSLCFG="cacert",0,"anedyaecc_crt.pem" // set ca cert
+AT+CMQTTSTART  // start mqtt
+AT+CMQTTACCQ=0,"<PHYSICAL_DEVICE_ID>",1 // Accquire Client
+AT+CMQTTSSLCFG=0,0         // set ssl config
+AT+CMQTTCONNECT=0,"tcp://mqtt.ap-in-1.anedya.io:8883",64800,1,"<PHYSICAL_DEVICE_ID>","<CONNECTION_KEY>" //connect to anedya broker
+AT+CMQTTSUB=0,60,1   // subscribe to command topic to receive commands
+$anedya/device/<PHYSICAL_DEVICE_ID>/commands
+AT+CMQTTSUB=0,60,1      // subscribe to response topic
+$anedya/device/<PHYSICAL_DEVICE_ID>/response
+AT+CMQTTSUB=0,58,1      // subscribe to error topic
+$anedya/device/<PHYSICAL_DEVICE_ID>/errors
+
+// submit data to anedya
+AT+CMQTTTOPIC=0,67     
+$anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/submitdata/json
+AT+CMQTTPAYLOAD=0,78
+{"data": [{"variable": "tempId","value": 123.456,"timestamp": 1714392140000}]}
+AT+CMQTTPUB=0,1,60
+/*-----------------------------------------------------------------------------------------*/
+
+
+/*----------------------------- Demo execution --------------------------------------------*/
+
+19:55:37.894 -> 
+19:55:37.894 -> *ATREADY: 1
+19:55:39.815 -> 
+19:55:39.815 -> *ISIMAID: "A0000000871004FF49FF0589"
+19:55:40.127 -> 
+19:55:40.127 -> +CPIN: READY
+19:55:41.234 -> 
+19:55:41.234 -> SMS DONE
+19:55:42.058 -> 
+19:55:42.058 -> +CGEV: EPS PDN ACT 1
+19:55:51.505 -> 
+19:55:51.505 -> PB DONE
+19:56:05.722 -> AT+CSSLCFG="sslversion",0,4
+
+19:56:05.722 -> OK
+19:56:14.161 -> AT+CSSLCFG="authmode",0,0
+
+19:56:14.161 -> OK
+19:56:34.608 -> AT+CSSLCFG="cacert",0,"anedyaecc_crt.pem"
+
+19:56:34.608 -> OK
+19:56:41.636 -> AT+CMQTTSTART
+
+19:56:41.636 -> OK
+19:56:41.636 -> 
+19:56:41.636 -> +CMQTTSTART: 0
+19:56:48.260 -> AT+CMQTTACCQ=0,"d84569e2-ad23-4a95-9ca6-f8e0414e9d8a",1
+
+19:56:48.260 -> OK
+19:56:53.874 -> AT+CMQTTSSLCFG=0,0
+
+19:56:53.874 -> OK
+19:57:00.638 -> AT+CMQTTCONNECT=0,"tcp://mqtt.ap-in-1.anedya.io:8883",64800,1,"d84569e2-ad23-4a95-9ca6-f8e0414e9d8a","5bc55b2c3dbd6bacdebc91671391be63"
+
+19:57:04.404 -> OK
+19:57:04.404 -> 
+19:57:04.404 -> +CMQTTCONNECT: 0,0
+19:57:04.404 -> 
+19:57:04.404 -> +CMQTTCONNECT: 0,0
+19:59:24.861 -> AT+CMQTTSUB=0,60,1
+
+19:59:24.861 -> >
+19:59:34.227 -> OK
+19:59:34.342 -> 
+19:59:34.342 -> +CMQTTSUB: 0,0
+19:59:46.514 -> 
+19:59:46.514 -> +CMQTTRXSTART: 0,60,124
+19:59:46.514 -> +CMQTTRXTOPIC: 0,60
+19:59:46.514 -> $anedya/device/d84569e2-ad23-4a95-9ca6-f8e0414e9d8a/commands
+19:59:46.514 -> +CMQTTRXPAYLOAD: 0,124
+19:59:46.514 -> {"command":"check01","commandId":"0195b91c-3828-70f2-947c-71cefe34f767","data":"ok","datatype":"string","exp":1743120000000}
+19:59:46.514 -> +CMQTTRXEND: 0
