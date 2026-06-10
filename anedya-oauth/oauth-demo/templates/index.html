@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anedya OAuth 2.0 Demo</title>
+  <meta name="description"
+    content="A live demonstration of the OAuth 2.0 Authorization Code flow using the Anedya platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0d14;
+      --surface: #111827;
+      --surface2: #1a2236;
+      --border: #1f2d45;
+      --accent: #3b82f6;
+      --accent2: #6366f1;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --radius: 14px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 13, 20, .85);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+
+    .nav-badge {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(59, 130, 246, .15);
+      color: var(--accent);
+      border: 1px solid rgba(59, 130, 246, .3);
+    }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      padding: 60px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Hero (logged-out) ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 28px;
+      padding: 60px 0 80px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #e2e8f0 30%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* ── Flow steps ── */
+    .flow {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 8px 0 16px;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 130px;
+      position: relative;
+      text-align: center;
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -18px;
+      top: 18px;
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+
+    .step-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .step-label {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all .2s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, .35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(59, 130, 246, .45);
+    }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--border);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, .15);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, .3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, .25);
+    }
+
+    .btn-green {
+      background: rgba(16, 185, 129, .15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .btn-green:hover {
+      background: rgba(16, 185, 129, .25);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .card-title {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-green {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* ── Dashboard grid ── */
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .dashboard-title h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .dashboard-title p {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-top: 4px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── User info ── */
+    .user-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .info-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .info-label {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .info-value {
+      font-size: .92rem;
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    /* ── Token card ── */
+    .token-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: var(--accent);
+      word-break: break-all;
+      line-height: 1.6;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .token-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .token-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .85rem;
+    }
+
+    .token-meta-row span:first-child {
+      color: var(--muted);
+    }
+
+    .token-meta-row span:last-child {
+      font-weight: 600;
+    }
+
+    .pill {
+      font-size: .72rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, .15);
+      color: var(--green);
+    }
+
+    .pill-blue {
+      background: rgba(59, 130, 246, .15);
+      color: var(--accent);
+    }
+
+    .pill-amber {
+      background: rgba(245, 158, 11, .15);
+      color: var(--amber);
+    }
+
+    /* ── API section ── */
+    .api-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .api-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .api-url {
+      flex: 1;
+      min-width: 240px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .method-badge {
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, .15);
+      color: var(--green);
+    }
+
+    /* ── Response viewer ── */
+    #response-area {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: .78rem;
+    }
+
+    .response-body {
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      line-height: 1.7;
+      max-height: 360px;
+      overflow-y: auto;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, .2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Flow badge ── */
+    .flow-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-size: .8rem;
+    }
+
+    .flow-badge-row .sep {
+      color: var(--border);
+    }
+
+    .flow-badge-row span {
+      color: var(--muted);
+    }
+
+    .flow-badge-row strong {
+      color: var(--text);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: .8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── JSON syntax colors ── */
+    .json-key {
+      color: #7dd3fc;
+    }
+
+    .json-str {
+      color: #86efac;
+    }
+
+    .json-num {
+      color: #fdba74;
+    }
+
+    .json-bool {
+      color: #c084fc;
+    }
+
+    .json-null {
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo">
+      <div class="logo-dot"></div>
+      Anedya OAuth Demo
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="nav-badge">Authorization Code Flow</span>
+      {% if user %}
+      <a href="/logout" class="btn btn-danger" style="padding:8px 16px;font-size:.82rem;">Sign Out</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main>
+
+    {% if not user %}
+    <!-- ═══════════════ LOGGED-OUT VIEW ═══════════════ -->
+    <div class="hero">
+      <div class="flow-badge-row">
+        <strong>Client App</strong><span class="sep">→</span>
+        <span>Authorization Server</span><span class="sep">→</span>
+        <span>Access Token</span><span class="sep">→</span>
+        <strong>Resource API</strong>
+      </div>
+
+      <h1>OAuth 2.0<br />Authorization Code Flow</h1>
+      <p>Experience the complete OAuth 2.0 handshake. Click below to initiate the flow, authenticate, and call a
+        protected resource API — all in one demo.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-icon">🖥️</div>
+          <div class="step-label">Your App<br />Requests Auth</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-icon">🔐</div>
+          <div class="step-label">User Logs In<br />& Consents</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-icon">🎟️</div>
+          <div class="step-label">Auth Code<br />Returned</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-icon">🪙</div>
+          <div class="step-label">Code Exchanged<br />for Token</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-icon">🚀</div>
+          <div class="step-label">API Called<br />with Token</div>
+        </div>
+      </div>
+
+      <a href="/login" class="btn btn-primary" id="login-btn">
+        <span>🔑</span>
+        Connect with Anedya
+      </a>
+      <p style="font-size:.78rem;color:var(--muted);">You will be redirected to the Anedya authorization server to
+        authenticate.</p>
+    </div>
+
+    {% else %}
+    <!-- ═══════════════ LOGGED-IN DASHBOARD ═══════════════ -->
+    <div class="dashboard">
+
+      <div class="dashboard-header">
+        <div class="dashboard-title">
+          <h2>🎉 Flow Complete</h2>
+          <p>You have successfully completed the OAuth 2.0 authorization code flow.</p>
+        </div>
+        <div class="flow-badge-row">
+          <span class="status-dot dot-green"></span>
+          <strong>Authenticated</strong>
+        </div>
+      </div>
+
+      <!-- Row 1: User info + Token -->
+      <div class="grid-2">
+
+        <!-- User Info -->
+        <div class="card">
+          <div class="card-title">👤 User Profile</div>
+          <div class="user-avatar">
+            {{ (user.get('firstname') or user.get('name') or 'U')[0] | upper }}
+          </div>
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">Full Name</span>
+              <span class="info-value">{{ user.get('firstname', '') }} {{ user.get('lastname', '') }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ user.get('email', 'N/A') }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Email Verified</span>
+              <span class="info-value">
+                {% if user.get('emailverified') %}
+                <span class="pill pill-green">✓ Verified</span>
+                {% else %}
+                <span class="pill pill-amber">⚠ Not Verified</span>
+                {% endif %}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Org / Subject</span>
+              <span class="info-value" style="font-family:'JetBrains Mono',monospace;font-size:.8rem;">
+                {{ user.get('sub') or user.get('org_id', 'N/A') }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Token Info -->
+        <div class="card">
+          <div class="card-title">🪙 Access Token</div>
+          <div class="token-box" id="token-display">{{ token.get('access_token', '') }}</div>
+          <div class="token-meta">
+            <div class="token-meta-row">
+              <span>Token Type</span>
+              <span class="pill pill-blue">{{ token.get('token_type', 'Bearer') }}</span>
+            </div>
+            <div class="token-meta-row">
+              <span>Expires In</span>
+              <span>{{ token.get('expires_in', 'N/A') }}s</span>
+            </div>
+            <div class="token-meta-row">
+              <span>Scope</span>
+              <span class="pill pill-green">{{ token.get('scope', 'project') }}</span>
+            </div>
+            <div class="token-meta-row">
+              <span>Refresh Token</span>
+              <span class="pill pill-green">✓ Present</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: API Call -->
+      <div class="card api-section">
+        <div class="card-title">🚀 Live API Call</div>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+          Use your access token to call a protected Anedya resource endpoint. The <code
+            style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.8rem;">Authorization: Bearer</code>
+          header is attached automatically from your session token.
+        </p>
+
+        <div class="api-controls">
+          <div class="api-url">
+            <span class="method-badge">POST</span>
+            https://api.sandbox.anedyacloud.com/v1/node/list
+          </div>
+          <button class="btn btn-green" id="fetch-btn" onclick="fetchNodes()">
+            <div class="spinner" id="spinner"></div>
+            <span id="btn-label">Fetch Nodes</span>
+          </button>
+        </div>
+
+        <div id="response-area">
+          <div class="response-header">
+            <span style="color:var(--muted);">Response</span>
+            <span id="status-badge"></span>
+          </div>
+          <div class="response-body" id="response-body"></div>
+        </div>
+      </div>
+
+      <!-- Row 3: Refresh Token -->
+      <!-- <div class="card api-section"> -->
+      <!-- <div class="card-title">♻️ Refresh Token</div>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+        Access tokens are short-lived. Use the <strong style="color:var(--text);">refresh token</strong> to silently obtain a new access token without requiring the user to log in again.
+      </p> -->
+
+      <!-- <div class="api-controls">
+          <div class="api-url">
+            <span class="method-badge" style="background:rgba(245,158,11,.15);color:var(--amber);">POST</span>
+            https://auth.sandbox.anedyacloud.com/v1/token
+          </div>
+          <button class="btn" id="refresh-btn" onclick="refreshToken()"
+            style="background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.3);">
+            <div class="spinner" id="refresh-spinner"></div>
+            <span id="refresh-label">♻️ Refresh Token</span>
+          </button>
+        </div>
+
+        <div id="refresh-area"
+          style="background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;">
+          <div class="response-header">
+            <span style="color:var(--muted);">Response</span>
+            <span id="refresh-status-badge"></span>
+          </div>
+          <div class="response-body" id="refresh-response-body"></div>
+        </div> -->
+      <!-- </div> -->
+
+      <!-- OAuth flow recap -->
+      <div class="card">
+        <div class="card-title">📋 What just happened?</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div
+              style="width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.15);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+              1</div>
+            <div><strong>Authorization Request</strong><br /><span style="color:var(--muted);font-size:.85rem;">Your app
+                redirected you to the Anedya authorization server with <code style="font-size:.8rem;">client_id</code>,
+                <code style="font-size:.8rem;">scope</code>, and a <code style="font-size:.8rem;">state</code> CSRF
+                token.</span></div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div
+              style="width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.15);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+              2</div>
+            <div><strong>User Consent</strong><br /><span style="color:var(--muted);font-size:.85rem;">You logged in and
+                granted the app permission to access your data with the requested scope.</span></div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div
+              style="width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.15);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+              3</div>
+            <div><strong>Authorization Code Exchange</strong><br /><span
+                style="color:var(--muted);font-size:.85rem;">The server redirected back to <code
+                  style="font-size:.8rem;">/auth/callback</code> with a short-lived <code
+                  style="font-size:.8rem;">code</code>. Your app exchanged it for the tokens shown above.</span></div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div
+              style="width:28px;height:28px;border-radius:8px;background:rgba(16,185,129,.15);color:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+              4</div>
+            <div><strong>API Access</strong><br /><span style="color:var(--muted);font-size:.85rem;">The <code
+                  style="font-size:.8rem;">access_token</code> is used as a Bearer token to authorize requests to
+                protected resource APIs.</span></div>
+          </div>
+          <!-- <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div
+              style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,.15);color:var(--amber);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+              5</div>
+            <div><strong>Token Refresh</strong><br /><span style="color:var(--muted);font-size:.85rem;">When the <code
+                  style="font-size:.8rem;">access_token</code> expires, the <code
+                  style="font-size:.8rem;">refresh_token</code> is sent to the token endpoint with <code
+                  style="font-size:.8rem;">grant_type=refresh_token</code> to silently get a new one — no user
+                interaction needed.</span></div>
+          </div> -->
+        </div>
+      </div>
+
+    </div>
+    {% endif %}
+
+  </main>
+
+  <footer>
+    OAuth 2.0 Authorization Code Flow Demo &mdash; Anedya Sandbox
+  </footer>
+
+  <script>
+    async function fetchNodes() {
+      const btn = document.getElementById('fetch-btn');
+      const spinner = document.getElementById('spinner');
+      const label = document.getElementById('btn-label');
+      const area = document.getElementById('response-area');
+      const body = document.getElementById('response-body');
+      const badge = document.getElementById('status-badge');
+
+      spinner.style.display = 'block';
+      label.textContent = 'Fetching…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/nodes');
+        const data = await res.json();
+        area.style.display = 'block';
+        badge.innerHTML = res.ok
+          ? `<span class="pill pill-green">${res.status} OK</span>`
+          : `<span class="pill pill-amber">${res.status}</span>`;
+        body.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
+      } catch (e) {
+        area.style.display = 'block';
+        badge.innerHTML = `<span class="pill" style="background:rgba(239,68,68,.15);color:var(--red);">Error</span>`;
+        body.textContent = 'Request failed: ' + e.message;
+      } finally {
+        spinner.style.display = 'none';
+        label.textContent = 'Fetch Nodes';
+        btn.disabled = false;
+      }
+    }
+
+    async function refreshToken() {
+      const btn = document.getElementById('refresh-btn');
+      const spinner = document.getElementById('refresh-spinner');
+      const label = document.getElementById('refresh-label');
+      const area = document.getElementById('refresh-area');
+      const body = document.getElementById('refresh-response-body');
+      const badge = document.getElementById('refresh-status-badge');
+
+      spinner.style.display = 'block';
+      label.textContent = 'Refreshing…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/refresh', { method: 'POST' });
+        const data = await res.json();
+
+        area.style.display = 'block';
+        badge.innerHTML = res.ok
+          ? `<span class="pill pill-green">${res.status} OK</span>`
+          : `<span class="pill pill-amber">${res.status}</span>`;
+        body.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
+
+        // Update the displayed access token in real time
+        if (res.ok && data.access_token) {
+          const tokenBox = document.getElementById('token-display');
+          if (tokenBox) {
+            tokenBox.style.transition = 'opacity .3s';
+            tokenBox.style.opacity = '0';
+            setTimeout(() => {
+              tokenBox.textContent = data.access_token;
+              tokenBox.style.opacity = '1';
+            }, 300);
+          }
+        }
+      } catch (e) {
+        area.style.display = 'block';
+        badge.innerHTML = `<span class="pill" style="background:rgba(239,68,68,.15);color:var(--red);">Error</span>`;
+        body.textContent = 'Request failed: ' + e.message;
+      } finally {
+        spinner.style.display = 'none';
+        label.textContent = '♻️ Refresh Token';
+        btn.disabled = false;
+      }
+    }
+
+    function syntaxHighlight(json) {
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        let cls = 'json-num';
+        if (/^"/.test(match)) {
+          cls = /:$/.test(match) ? 'json-key' : 'json-str';
+        } else if (/true|false/.test(match)) {
+          cls = 'json-bool';
+        } else if (/null/.test(match)) {
+          cls = 'json-null';
+        }
+        return `<span class="${cls}">${match}</span>`;
+      });
+    }
+  </script>
+</body>
+
+</html>

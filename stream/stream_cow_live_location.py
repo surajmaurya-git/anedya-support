@@ -8,47 +8,14 @@ import sys
 import signal
 import uuid
 
-API_KEY = "419f4d571f75936998447c2af41691c0d4dafe3af0fff58f85d64623660a0f79"
-VARIABLES = ["temperature", "humidity", "pressure"]
+API_KEY = "2ecb751637937428b7a365266d405bbf45c711697230b95997dfb197dac54223"
+NODE_ID = "019e4b15-26cd-7636-9d9c-6f8baec8c955"
+VARIABLES = ["liveLocation"]
 
 # Global websocket object
 ws_app = None
 ws_thread = None
 stop_flag = False
-
-
-def create_node():
-    global NODE_ID, connection_key, bind_sec, device_id
-    url = "https://api.anedya.io/v1/node/create"
-    payload = {
-        "node_name": "Stream Test Node",
-        "node_desc": "Node created from python script for stream testing.",
-        "tags": [{"key": "Key1", "value": "1.00"}],
-        "preAuthorize": False,
-    }
-    body_str = json.dumps(payload)
-    # print("Creating node with payload:", json.dumps(payload, indent=2))
-    headers = {"Authorization": f"Bearer {API_KEY}"}
-
-    resp = requests.post(url, data=body_str, headers=headers)
-    info = resp.json()
-    # print("Bindind operation response:", json.dumps(info, indent=2))
-    NODE_ID = info.get("nodeId", "")
-
-    # Get node info
-    url = "https://api.anedya.io/v1/node/details"
-    payload = {"nodes": [NODE_ID]}
-    body_str = json.dumps(payload)
-    # print("Creating node with payload:", json.dumps(payload, indent=2))
-    headers = {"Authorization": f"Bearer {API_KEY}"}
-
-    resp = requests.post(url, data=body_str, headers=headers)
-    info = resp.json()
-    # print("Node details:", json.dumps(info, indent=2))
-    # connection_key= info["nodes"][0]["connectionKey"]
-    connection_key = info["data"][NODE_ID]["connectionKey"]
-    bind_sec = info["data"][NODE_ID]["nodebindingkey"]
-    device_id = str(uuid.uuid4())
 
 
 def create_stream():
@@ -61,6 +28,8 @@ def create_stream():
         "variables": VARIABLES,
         "expiry": 86400,
     }
+    print('Stream creation payload:', json.dumps(payload, indent=2))
+    # {"sources":{"nodes":["019e4b15-26cd-7636-9d9c-6f8baec8c955"]},"events":["valuestore::updates","valuestore::delete","events::nodeevents"],"variables":["liveLocation"],"expiry":86378}
     body = json.dumps(payload)
     headers = {"Authorization": f"Bearer {API_KEY}"}
     resp = requests.post(url, data=body, headers=headers)
@@ -111,60 +80,6 @@ def create_access_token():
     token = info["token"]
 
 
-def bind_device():
-    url = "https://device.ap-in-1.anedya.io/v1/bindDevice"
-    payload = {"deviceid": str(device_id), "bindingsecret": str(bind_sec)}
-    body_str = json.dumps(payload)
-    # print("Binding device with payload:", json.dumps(payload, indent=2))
-    headers = {"Auth-mode": "key", "Authorization": connection_key}
-
-    resp = requests.post(url, data=body_str, headers=headers)
-    info = resp.json()
-    # print("Bindind operation response:", json.dumps(info, indent=2))
-    if info.get("success", False):
-        print("Device bound successfully\n")
-    else:
-        print("Device binding failed :", json.dumps(info, indent=2))
-
-
-def set_key():
-    url = "https://device.ap-in-1.anedya.io/v1/valuestore/setValue"
-    payload = {
-        "reqId": "",
-        "key": "nodeKey1",
-        "value": "Value set from python client",
-        "type": "string",
-    }
-    headers = {
-        "Auth-mode": "key",
-        "Authorization": connection_key,
-    }
-    body_str = json.dumps(payload)
-
-    resp = requests.post(url, data=body_str, headers=headers)
-    info = resp.json()
-    print("Set key operation response:", json.dumps(info))
-
-
-def submit_data(variable_identifier, value, timestamp=0):
-    url = "https://device.ap-in-1.anedya.io/v1/submitData"
-    payload = {
-        "data": [
-            {"variable": variable_identifier, "value": value, "timestamp": timestamp}
-        ]
-    }
-    headers = {
-        "Auth-mode": "key",
-        "Authorization": connection_key,
-    }
-    body_str = json.dumps(payload)
-    print(body_str)
-
-    resp = requests.post(url, data=body_str, headers=headers)
-    info = resp.json()
-    print("Submit data operation response:", json.dumps(info))
-
-
 def generate_anedya_signature(token: str, timestamp: int, request_body=None):
     if request_body is None:
         body_hash = hashlib.sha256(b"").digest()
@@ -209,7 +124,7 @@ def connect_ws():
     ws_app = websocket.WebSocketApp(
         stream_url,
         header=ws_headers,
-        on_message=lambda ws, msg: print("Stream MSG:", msg),
+        on_message=lambda ws, msg: print("MSG:", msg),
         on_error=lambda ws, e: print("ERROR:", e),
         on_close=lambda ws, a, b: print("CLOSED", a, b),
         on_open=on_open,
@@ -257,12 +172,8 @@ signal.signal(signal.SIGINT, handle_keyboard_interrupt)
 # Keep main thread alive
 while True:
     time.sleep(1)
-    print("Creating node...")
-    create_node()
-    print("Node created with id:", NODE_ID)
-    print(f"Connection key: {connection_key}")
-    print(f"Binding secret: {bind_sec}")
-    print(f"Generated Device id: {device_id}")
+    print("Connecting with node...")
+    print("Node id:", NODE_ID)
 
     print("Creating stream...")
     create_stream()
@@ -281,12 +192,5 @@ while True:
     while not connected:
         time.sleep(1)
 
-    print("\nDevice is connected. Proceeding with bind and set key operations...")
-    bind_device()
-
     while True:
-    # for _ in range(10):
-        # set_key()
-        submit_data(VARIABLES[0], 25.00, 0)
-        time.sleep(2)
-        print("")
+        time.sleep(1)

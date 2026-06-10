@@ -1,0 +1,11 @@
+[project]
+name = "oauth-demo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "authlib>=1.7.2",
+    "flask>=3.1.3",
+    "requests>=2.34.2",
+]
